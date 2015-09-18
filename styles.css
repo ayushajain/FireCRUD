@@ -1,0 +1,15 @@
+table, th, td{
+    border: 1px solid black;
+}
+
+.defaultInput{
+    border: 1px inset;
+    height: 115%;
+    width: 100%;
+}
+
+.editInput{
+    border: 1px solid orange;
+    height: 115%;
+    width: 100%;
+}

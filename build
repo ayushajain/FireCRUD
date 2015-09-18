@@ -1,0 +1,16 @@
+#!/bin/bash
+# Builds to JS es5 and creates documentation
+
+#babel FireCRUD.js --out-file deployment/FireAuth-0.0.1.js
+
+#echo "Compiled to es5."
+
+jsdoc2md FireCRUD.js > docs/docs.md
+
+#echo "Built documentation."
+
+#node docs/documentation.js
+
+#echo "Appended documentation."
+
+echo "Build Complete."
