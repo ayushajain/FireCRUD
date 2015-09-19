@@ -5,7 +5,7 @@
 
 #echo "Compiled to es5."
 
-jsdoc2md FireCRUD.js > docs/docs.md
+jsdoc2md FireCRUD.js > readme.md
 
 #echo "Built documentation."
 
