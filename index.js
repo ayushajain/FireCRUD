@@ -10,7 +10,7 @@ const CLIENT_COLUMNS = {
         ref: "user_name",
     },
     gender: {
-        title: "Gender"
+        title: "Gender",
         type: "select",
         ref: "gender",
         options: {
@@ -31,11 +31,4 @@ const CLIENT_COLUMNS = {
     }
 }
 
-var createColumns = {
-    id: "create",
-    name: "create",
-    expirydate: "create",
-    graceperiod: "create",
-    licenseid: "create",
-    status: "create",
-}
+var myCRUD = new FireCRUD("https://techlabproductivity.firebaseio.com/", CLIENT_COLUMNS);
