@@ -2,6 +2,7 @@
 
 
 /**
+ * A CRUD interface for Firebase to manage clients/users
  * @class FireCRUD
  * @constructor Creates an instance of FireCRUD
  * @param {String} firebaseUserURL - the link to the user branch in the Firebase.
@@ -55,6 +56,7 @@ class FireCRUD {
          * @event userEdited
          */
         this.ref.on('child_changed', function(childSnapshot, prevChildKey){
+            console.log(childSnapshot.val());
             $("." + childSnapshot.key()).remove();
         });
 
@@ -99,7 +101,6 @@ class FireCRUD {
         if($(button).attr('id').indexOf("delete") > -1){      //toggle modal for deleting client
 
             for(var prop in crud.columns){
-                console.log("." + prop + "-" + licenseID)
                 $(".delete-" + prop).text($("#" + prop + "-" + licenseID).val());
             }
 
@@ -119,7 +120,7 @@ class FireCRUD {
 
         }else if($(button).attr('id').indexOf("save") > -1){      //update and toggle readonly
 
-            var newLicenseID = $("#licenseid-" + licenseID).val();
+            var newLicenseID = $("#id-" + licenseID).val();////////////////////////////////////////////
             $("." + licenseID).children('td').each(function(index, element){
 
                 var input = $(element).children()[0];
@@ -136,9 +137,10 @@ class FireCRUD {
             });
 
             //console.log($("#id-" + newLicenseID).val() + "  ,  " + newLicenseID)
-            crud.createUser();
+            console.log(newLicenseID)
+            crud.createUser(newLicenseID, true);
 
-            $(button).text("Edit").attr('id', "edit-" + $("#licenseid-" + newLicenseID).val()); //set to new licenseid value
+            $(button).text("Edit").attr('id', "edit-" + $("#id-" + newLicenseID).val()); //set to new licenseid value////////////////////////////////
         }
 
     }
@@ -164,13 +166,13 @@ class FireCRUD {
                     newTableRow += "</select>" +
                         "</td>";
                 }else if(columns[prop].type == "input"){
-                    if(columns[prop].ref == "key"){
 
+                    if(columns[prop].ref == "key"){
                         //key column
 
-                        console.log("asdasd");
+
                         newTableRow += "<td>"+
-                            "<input readonly class='defaultInput' id ='" + prop + "-" + key + "' value='" + key + "'>"+
+                            "<input readonly type='text' class='defaultInput' id ='" + prop + "-" + key + "' value='" + key + "'>"+
                         "</td>"
                     }else{
 
@@ -189,7 +191,6 @@ class FireCRUD {
                     newTableRow += "<td>"+
                         "<select class='defaultInput' id ='" + prop + "-create'>";
 
-                    console.log(columns[prop].options)
                     for(var option in columns[prop].options){
                         newTableRow += "<option value='" + columns[prop].options[option] + "'>" + columns[prop].options[option] + "</option>";
                     }
@@ -225,7 +226,9 @@ class FireCRUD {
 
         //reitterate through columns and set drowpdowns to firebase Value
         for(var prop in columns){
-            $("#" + prop + "-" + key).val(snapval[columns[prop].ref])
+            if(columns[prop].type == "select"){
+                $("#" + prop + "-" + key).val(snapval[columns[prop].ref])
+            }
         }
 
     }
@@ -236,24 +239,32 @@ class FireCRUD {
      * @function createUser
      * @param {object} userInfo - an object containing the information regarding the user
      */
-    createUser(){
+    createUser(key, isEdit){
+        console.log(key);
         var crud = this;
         var userInfo = {};
 
         for(var info in crud.columns){
             var reference = crud.columns[info].ref;
-
-            if(crud.columns[info].type == "input"){
-                 userInfo[reference] = $("#" + info + "-create").val()
+            if(isEdit){
+                if(crud.columns[info].type == "input"){
+                     userInfo[reference] = $("#" + info + "-" + key).val()
+                }else{
+                    userInfo[reference] = $("#" + info + "-" + key + " option:selected").text();
+                }
             }else{
-                userInfo[reference] = $("#" + info + "-create option:selected").text();
+                if(crud.columns[info].type == "input"){
+                     userInfo[reference] = $("#" + info + "-create").val()
+                }else{
+                    userInfo[reference] = $("#" + info + "-create option:selected").text();
+                }
             }
         }
 
-        if(!userInfo.userID || userInfo.userID == ""){
-            userInfo.userID = crud.generateID(40);
+        if(!key || key == ""){
+            key = crud.generateID(40);
         }
-        this.ref.child(userInfo.userID).set(userInfo);
+        this.ref.child(key).set(userInfo);
     }
 
     /**

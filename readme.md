@@ -44,6 +44,8 @@ FireCRUD
 **Kind**: global class  
 <a name="new_Creates an instance of FireCRUD_new"></a>
 ### new Creates an instance of FireCRUD(firebaseUserURL, columns)
+A CRUD interface for Firebase to manage clients/users
+
 
 | Param | Type | Description |
 | --- | --- | --- |
