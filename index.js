@@ -9,6 +9,11 @@ const CLIENT_COLUMNS = {
         type: "input",
         ref: "user_name",
     },
+    birthday: {
+        title: "Birthday",
+        type: "input",
+        ref: "birthday",
+    },
     gender: {
         title: "Gender",
         type: "select",

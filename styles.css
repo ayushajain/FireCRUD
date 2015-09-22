@@ -4,12 +4,14 @@ table, th, td{
 
 .defaultInput{
     border: 1px inset;
-    height: 115%;
+    height: 110%;
     width: 100%;
+    border-radius: 0px;
 }
 
 .editInput{
     border: 1px solid orange;
-    height: 115%;
+    height: 110%;
     width: 100%;
+    border-radius: 0px;
 }

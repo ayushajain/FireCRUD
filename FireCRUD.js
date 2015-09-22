@@ -96,51 +96,52 @@ class FireCRUD {
         var crud = this;
         console.log("button pressed")
 
-        var licenseID = $(button).attr('id').substring($(button).attr('id').lastIndexOf("-") + 1);
+        var userID = $(button).attr('id').substring($(button).attr('id').lastIndexOf("-") + 1);
 
         if($(button).attr('id').indexOf("delete") > -1){      //toggle modal for deleting client
 
             for(var prop in crud.columns){
-                $(".delete-" + prop).text($("#" + prop + "-" + licenseID).val());
+                $(".delete-" + prop).text($("#" + prop + "-" + newUserID).val());
             }
 
-            $(".finalDelete").attr('id', "delete-" + licenseID);
+            $(".finalDelete").attr('id', "delete-" + userID);
 
         }else if($(button).attr('id').indexOf("edit") > -1){      //turn on client editing
 
-            $("." + licenseID).children('td').each(function(index, element){
+            $("." + userID).children('td').each(function(index, element){
                 var input = $(element).children()[0];
                 $(input).attr("readonly", false);
 
-                if($(input).prop("tagName") == "INPUT")         //add highlight to selections
+                if($(input).prop("tagName") == "INPUT" || $(input).prop("tagName") == "SELECT")         //add highlight to selections
                     $(input).removeClass("defaultInput").addClass("editInput");
             });
 
-            $(button).text("Save").attr('id', ("save-" + licenseID));
+            $(button).text("Save").attr('id', ("save-" + userID));
 
         }else if($(button).attr('id').indexOf("save") > -1){      //update and toggle readonly
 
-            var newLicenseID = $("#id-" + licenseID).val();////////////////////////////////////////////
-            $("." + licenseID).children('td').each(function(index, element){
+            var newUserID = $("#id-" + userID).val();////////////////////////////////////////////
+            $("." + userID).children('td').each(function(index, element){
 
                 var input = $(element).children()[0];
                 var origClassName = $(input).attr('id');
-                var newClass = origClassName.substring(0, origClassName.lastIndexOf("-") ) + "-" + newLicenseID;
+                var newClass = origClassName.substring(0, origClassName.lastIndexOf("-") ) + "-" + newUserID;
 
-                if($(input).prop("tagName") == "INPUT")         //disable highlight and make readonly
+                if($(input).prop("tagName") == "INPUT" || $(input).prop("tagName") == "SELECT")        //disable highlight and make readonly
                     $(input).attr("readonly", true).removeClass("editInput").addClass("defaultInput");
 
 
+
                 $(input).attr('id', newClass)
-                $("." + licenseID).removeClass(licenseID).addClass(newLicenseID);
+                $("." + userID).removeClass(userID).addClass(newUserID);
 
             });
 
-            //console.log($("#id-" + newLicenseID).val() + "  ,  " + newLicenseID)
-            console.log(newLicenseID)
-            crud.createUser(newLicenseID, true);
+            //console.log($("#id-" + newUserID).val() + "  ,  " + newUserID)
+            console.log(newUserID)
+            crud.createUser(newUserID, true);
 
-            $(button).text("Edit").attr('id', "edit-" + $("#id-" + newLicenseID).val()); //set to new licenseid value////////////////////////////////
+            $(button).text("Edit").attr('id', "edit-" + $("#id-" + newUserID).val()); //set to new userid value////////////////////////////////
         }
 
     }
