@@ -1,4 +1,4 @@
-table, th, td{
+.client-table, .client-table th, .client-table td{
     border: 1px solid black;
 }
 

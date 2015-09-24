@@ -1,5 +1,5 @@
 const CLIENT_COLUMNS = {
-    id: {
+    id: {                   //must be named id
         title: "User ID",
         type: "input",
         ref: "key",         //for user IDs make the reference "key".

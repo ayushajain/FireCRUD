@@ -6,11 +6,8 @@
 </dl>
 ## Functions
 <dl>
-<dt><a href="#createUser">createUser(userInfo)</a></dt>
+<dt><a href="#createUser">createUser(userId)</a></dt>
 <dd><p>Adds a user to the firebase user branch</p>
-</dd>
-<dt><a href="#deleteUser">deleteUser(userID, callback)</a></dt>
-<dd><p>Deletes a user from firebase user branch</p>
 </dd>
 <dt><a href="#generateID">generateID(idLength)</a> ⇒ <code>string</code></dt>
 <dd><p>Generates a random user ID</p>
@@ -27,14 +24,17 @@
 <dt><a href="#event_userEdited">"userEdited"</a></dt>
 <dd><p>Deletes original copy of a row when a child has been edited (The edited version will be appended in another event listener)</p>
 </dd>
-<dt><a href="#event_editDeleteClients">"editDeleteClients"</a></dt>
-<dd><p>Handles editing and deletion of a user in a row</p>
+<dt><a href="#event_deletingClients">"deletingClients"</a></dt>
+<dd><p>Handles deletion of a user in a row</p>
+</dd>
+<dt><a href="#event_editingClients">"editingClients"</a></dt>
+<dd><p>Handles editing of a user in a row</p>
 </dd>
 <dt><a href="#event_createUser">"createUser"</a></dt>
 <dd><p>Handles user creation</p>
 </dd>
-<dt><a href="#event_userDeletion">"userDeletion"</a></dt>
-<dd><p>Confirm deletion event</p>
+<dt><a href="#event_userDeletionEditing">"userDeletionEditing"</a></dt>
+<dd><p>Confirm deletion or editing event</p>
 </dd>
 </dl>
 <a name="Creates an instance of FireCRUD"></a>
@@ -53,25 +53,14 @@ A CRUD interface for Firebase to manage clients/users
 | columns | <code>Object</code> | the organization of each of the columns. |
 
 <a name="createUser"></a>
-## createUser(userInfo)
+## createUser(userId)
 Adds a user to the firebase user branch
 
 **Kind**: global function  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| userInfo | <code>object</code> | an object containing the information regarding the user |
-
-<a name="deleteUser"></a>
-## deleteUser(userID, callback)
-Deletes a user from firebase user branch
-
-**Kind**: global function  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| userID | <code>string</code> | the user's ID |
-| callback | <code>function</code> | [Optional] a callback method to handle user deletion |
+| userId | <code>string</code> | Optional, the ID used to identify the user |
 
 <a name="generateID"></a>
 ## generateID(idLength) ⇒ <code>string</code>
@@ -99,9 +88,14 @@ Deletes the row when a user has been deleted
 Deletes original copy of a row when a child has been edited (The edited version will be appended in another event listener)
 
 **Kind**: event emitted  
-<a name="event_editDeleteClients"></a>
-## "editDeleteClients"
-Handles editing and deletion of a user in a row
+<a name="event_deletingClients"></a>
+## "deletingClients"
+Handles deletion of a user in a row
+
+**Kind**: event emitted  
+<a name="event_editingClients"></a>
+## "editingClients"
+Handles editing of a user in a row
 
 **Kind**: event emitted  
 <a name="event_createUser"></a>
@@ -109,8 +103,8 @@ Handles editing and deletion of a user in a row
 Handles user creation
 
 **Kind**: event emitted  
-<a name="event_userDeletion"></a>
-## "userDeletion"
-Confirm deletion event
+<a name="event_userDeletionEditing"></a>
+## "userDeletionEditing"
+Confirm deletion or editing event
 
 **Kind**: event emitted  
