@@ -36,4 +36,4 @@ const CLIENT_COLUMNS = {
     }
 }
 
-var myCRUD = new FireCRUD("https://techlabproductivity.firebaseio.com/", CLIENT_COLUMNS);
+var myCRUD = new FireCRUD("https://techlabproductivity.firebaseio.com/", CLIENT_COLUMNS, true);

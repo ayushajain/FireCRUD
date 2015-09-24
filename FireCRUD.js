@@ -1,5 +1,4 @@
-"use strict";
-
+"use strict"
 
 /**
  * A CRUD interface for Firebase to manage clients/users
@@ -10,11 +9,13 @@
  */
 class FireCRUD {
 
-    constructor(firebaseUserURL, columns){
+    constructor(firebaseUserURL, columns, modal){
         this.ref = new Firebase(firebaseUserURL);
         this.columns = columns;
         this.crud = this;
+        this.useModal = modal;
 
+        this.createTable();
         this.init();
     }
 
@@ -33,12 +34,12 @@ class FireCRUD {
             snapshot.forEach(function(childSnapshot){
                 //append client data rows
                 if($("." + childSnapshot.key())[0] === undefined){
-                    crud.createRow(childSnapshot.key(), crud.columns, true, childSnapshot.val())
+                    crud.createRow(childSnapshot.key(), true, childSnapshot.val())
                 }
             });
 
             //append creation row
-            crud.createRow("createclient-row", crud.columns, false, "")
+            crud.createRow("createclient-row", false, "")
 
 
         });
@@ -91,7 +92,6 @@ class FireCRUD {
         });
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     editDeleteClients(button){
         var crud = this;
         console.log("button pressed")
@@ -100,9 +100,12 @@ class FireCRUD {
 
         if($(button).attr('id').indexOf("delete") > -1){      //toggle modal for deleting client
 
+            var userInfo = "";
             for(var prop in crud.columns){
-                $(".delete-" + prop).text($("#" + prop + "-" + newUserID).val());
+                userInfo += "<p>" + crud.columns[prop].title + ": " + $("#" + prop + "-" + userID).val() + "</p>";
             }
+
+            $("#user-info-deletion").empty().append(userInfo);
 
             $(".finalDelete").attr('id', "delete-" + userID);
 
@@ -110,7 +113,7 @@ class FireCRUD {
 
             $("." + userID).children('td').each(function(index, element){
                 var input = $(element).children()[0];
-                $(input).attr("readonly", false);
+                $(input).attr("readonly", false).attr('disabled', false);
 
                 if($(input).prop("tagName") == "INPUT" || $(input).prop("tagName") == "SELECT")         //add highlight to selections
                     $(input).removeClass("defaultInput").addClass("editInput");
@@ -128,7 +131,7 @@ class FireCRUD {
                 var newClass = origClassName.substring(0, origClassName.lastIndexOf("-") ) + "-" + newUserID;
 
                 if($(input).prop("tagName") == "INPUT" || $(input).prop("tagName") == "SELECT")        //disable highlight and make readonly
-                    $(input).attr("readonly", true).removeClass("editInput").addClass("defaultInput");
+                    $(input).attr("readonly", true).attr('disabled', true).removeClass("editInput").addClass("defaultInput");
 
 
 
@@ -145,60 +148,73 @@ class FireCRUD {
         }
 
     }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    createTable(){
+        //creates table
+        $(document.body).append("<table class='client-table'>"+
+                "<tr class='static-header'>"+
+                "</tr>"+
+            "</table>");
 
-    createRow(key, columns, readOnly, snapval){
+        //creates title row
+        var titleRow = "<tr class='title-row'>"
+        for(var prop in this.columns){
+            titleRow += "<td><input readonly type='text' class='title' value='" + this.columns[prop].title + "'></td>"
+        }
+        titleRow += "</tr>"
+
+        $(".client-table tbody").append(titleRow);
+    }
+
+    createRow(key, readOnly, snapval){
         console.log(snapval)
+
         var newTableRow = "<tr class='" + key + "'>";
-        for(var prop in columns){
+        for(var prop in this.columns){
 
             //User rows
             if(readOnly){
 
-                if(columns[prop].type == "select"){
+                if(this.columns[prop].type == "select"){
                     newTableRow += "<td>"+
                         "<select class='defaultInput' id ='" + prop + "-" + key + "'>";
 
-                    for(var option in columns[prop].options){
-                        newTableRow += "<option value='" + columns[prop].options[option] + "'>" + columns[prop].options[option] + "</option>";
+                    for(var option in this.columns[prop].options){
+                        newTableRow += "<option value='" + this.columns[prop].options[option] + "'>" + this.columns[prop].options[option] + "</option>";
                     }
 
                     newTableRow += "</select>" +
                         "</td>";
-                }else if(columns[prop].type == "input"){
+                }else if(this.columns[prop].type == "input"){
 
-                    if(columns[prop].ref == "key"){
+                    if(this.columns[prop].ref == "key"){
                         //key column
-
 
                         newTableRow += "<td>"+
                             "<input readonly type='text' class='defaultInput' id ='" + prop + "-" + key + "' value='" + key + "'>"+
                         "</td>"
                     }else{
-
                         //client column
 
-
                         newTableRow += "<td>"+
-                            "<input readonly class='defaultInput' id ='" + prop + "-" + key + "' value='" + snapval[columns[prop].ref] + "'>"+
+                            "<input readonly class='defaultInput' id ='" + prop + "-" + key + "' value='" + snapval[this.columns[prop].ref] + "'>"+
                         "</td>"
                     }
                 }
             }
             //Creation rows
             else{
-                if(columns[prop].type == "select"){
+                if(this.columns[prop].type == "select"){
                     newTableRow += "<td>"+
                         "<select class='defaultInput' id ='" + prop + "-create'>";
 
-                    for(var option in columns[prop].options){
-                        newTableRow += "<option value='" + columns[prop].options[option] + "'>" + columns[prop].options[option] + "</option>";
+                    for(var option in this.columns[prop].options){
+                        newTableRow += "<option value='" + this.columns[prop].options[option] + "'>" + this.columns[prop].options[option] + "</option>";
                     }
 
                     newTableRow += "</select>" +
                         "</td>";
-                }else if(columns[prop].type == "input"){
+                }else if(this.columns[prop].type == "input"){
                     newTableRow += "<td>"+
                         "<input class='defaultInput' id ='" + prop +"-create'>"+
                     "</td>"
@@ -226,9 +242,9 @@ class FireCRUD {
         $(".client-table tbody").append(newTableRow);
 
         //reitterate through columns and set drowpdowns to firebase Value
-        for(var prop in columns){
-            if(columns[prop].type == "select"){
-                $("#" + prop + "-" + key).val(snapval[columns[prop].ref])
+        for(var prop in this.columns){
+            if(this.columns[prop].type == "select"){
+                $("#" + prop + "-" + key).val(snapval[this.columns[prop].ref]).attr('disabled', true);
             }
         }
 
